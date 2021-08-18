@@ -242,10 +242,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1506194540}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4b4323337e9caf47a69e5ca6ca66d47, type: 3}
+  m_Script: {fileID: 11500000, guid: 8b559646976ec6c48ae04e86072789f7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cubeMaterial: {fileID: 2100000, guid: e0a2493aa6b5073488f26935c5037807, type: 2}
+  textureAtlas: {fileID: 2100000, guid: e0a2493aa6b5073488f26935c5037807, type: 2}
 --- !u!4 &1506194545
 Transform:
   m_ObjectHideFlags: 0
