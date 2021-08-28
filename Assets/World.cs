@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Realtime.Messaging.Internal;
-using System;
+
 
 public class World : MonoBehaviour {
 
 	public GameObject player;
 	public Material textureAtlas;
-	public Material fluidTexture; 
+	public Material fluidTexture;
 	public static int columnHeight = 16;
 	public static int chunkSize = 16;
 	public static int worldSize = 1;
@@ -41,33 +41,22 @@ public class World : MonoBehaviour {
 
 	public static Block GetWorldBlock(Vector3 pos)
 	{
-		int cx, cy, cz;
+		int cx = (int) (Mathf.Round(pos.x)/(float)chunkSize) * chunkSize;
+		int cy = (int) (Mathf.Round(pos.y)/(float)chunkSize) * chunkSize;
+		int cz = (int) (Mathf.Round(pos.z)/(float)chunkSize) * chunkSize;
 
-		if (pos.x < 0)
-			cx = (int)((Mathf.Round(pos.x - chunkSize) + 1) / (float)chunkSize) * chunkSize;
-		else
-			cx = (int)(Mathf.Round(pos.x) / (float)chunkSize) * chunkSize;
+		int blx = (int) (Mathf.Round(pos.x) - cx);
+		int bly = (int) (Mathf.Round(pos.y) - cy);
+		int blz = (int) (Mathf.Round(pos.z) - cz);
 
-		if (pos.y < 0)
-			cy = (int)((Mathf.Round(pos.y - chunkSize) + 1) / (float)chunkSize) * chunkSize;
-		else
-			cy = (int)(Mathf.Round(pos.y) / (float)chunkSize) * chunkSize;
-
-		if (pos.z < 0)
-			cz = (int)((Mathf.Round(pos.z - chunkSize) + 1) / (float)chunkSize) * chunkSize;
-		else
-			cz = (int)(Mathf.Round(pos.z) / (float)chunkSize) * chunkSize;
-
-		int blx = (int)Mathf.Abs((float)Math.Round(pos.x) - cx);
-		int bly = (int)Mathf.Abs((float)Math.Round(pos.y) - cy);
-		int blz = (int)Mathf.Abs((float)Math.Round(pos.z) - cz);
-
-		string cn = BuildChunkName(new Vector3(cx, cy, cz));
+		string cn = BuildChunkName(new Vector3(cx,cy,cz));
 		Chunk c;
-		if (chunks.TryGetValue(cn, out c))
+		Debug.Log("World Hit: " + pos);
+		Debug.Log("Chunk Hit: " + cn);
+		Debug.Log("Block " + blx + " " + bly + " " + blz);
+		if(chunks.TryGetValue(cn, out c))
 		{
-
-			return c.chunkData[blx, bly, blz];
+			return c.chunkData[blx,bly,blz];
 		}
 		else
 			return null;
@@ -84,11 +73,10 @@ public class World : MonoBehaviour {
 
 		if(!chunks.TryGetValue(n, out c))
 		{
-            //c = new Chunk(chunkPosition, textureAtlas, fluidTexture);
-			c = new Chunk(chunkPosition, textureAtlas);
+			c = new Chunk(chunkPosition, textureAtlas, fluidTexture);
 			c.chunk.transform.parent = this.transform;
-            //c.fluid.transform.parent = this.transform;
-            chunks.TryAdd(c.chunk.name, c);
+			c.fluid.transform.parent = this.transform;
+			chunks.TryAdd(c.chunk.name, c);
 		}
 	}
 
@@ -115,17 +103,16 @@ public class World : MonoBehaviour {
 		BuildChunkAt(x + 1, y, z);
 		StartCoroutine(BuildRecursiveWorld(x + 1, y, z, rad, nextrad));
 		yield return null;
-
+		
 		//build chunk up
 		BuildChunkAt(x, y + 1, z);
 		StartCoroutine(BuildRecursiveWorld(x, y + 1, z, rad, nextrad));
 		yield return null;
-
 		//build chunk down
 		BuildChunkAt(x, y - 1, z);
 		StartCoroutine(BuildRecursiveWorld(x, y - 1, z, rad, nextrad));
 		yield return null;
-
+		
 		//build chunk down
 		BuildChunkAt(x + 1, y, z + 1);
 		StartCoroutine(BuildRecursiveWorld(x + 1, y, z + 1, rad, nextrad));
@@ -133,6 +120,14 @@ public class World : MonoBehaviour {
 
 		BuildChunkAt(x - 1, y, z - 1);
 		StartCoroutine(BuildRecursiveWorld(x - 1, y, z - 1, rad, nextrad));
+		yield return null;
+
+		BuildChunkAt(x + 1, y, z - 1);
+		StartCoroutine(BuildRecursiveWorld(x + 1, y, z - 1, rad, nextrad));
+		yield return null;
+
+		BuildChunkAt(x - 1, y, z + 1);
+		StartCoroutine(BuildRecursiveWorld(x - 1, y, z + 1, rad, nextrad));
 		yield return null;
 	}
 
@@ -145,7 +140,7 @@ public class World : MonoBehaviour {
 				c.Value.DrawChunk();
 			}
 			if(c.Value.chunk && Vector3.Distance(player.transform.position,
-								c.Value.chunk.transform.position) > radius*chunkSize * 2)
+								c.Value.chunk.transform.position) > radius*chunkSize * 1.5f)
 				toRemove.Add(c.Key);
 
 			yield return null;
@@ -160,6 +155,7 @@ public class World : MonoBehaviour {
 			Chunk c;
 			if(chunks.TryGetValue(n, out c))
 			{
+				Destroy(c.fluid);
 				Destroy(c.chunk);
 				c.Save();
 				chunks.TryRemove(n, out c);
@@ -172,7 +168,7 @@ public class World : MonoBehaviour {
 	public void BuildNearPlayer()
 	{
 		StopCoroutine("BuildRecursiveWorld");
-		queue.Run(BuildRecursiveWorld((int)(player.transform.position.x/chunkSize),
+		StartCoroutine(BuildRecursiveWorld((int)(player.transform.position.x/chunkSize),
 											(int)(player.transform.position.y/chunkSize),
 											(int)(player.transform.position.z/chunkSize),radius,radius));
 	}
@@ -212,7 +208,7 @@ public class World : MonoBehaviour {
 	void Update () {
 		Vector3 movement = lastbuildPos - player.transform.position;
 
-		if(movement.magnitude > chunkSize * 2)
+		if(movement.magnitude > chunkSize * 1.5f)
 		{
 			lastbuildPos = player.transform.position;
 			BuildNearPlayer();
