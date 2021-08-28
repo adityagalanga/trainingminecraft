@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Realtime.Messaging.Internal;
-
+using System;
 
 public class World : MonoBehaviour {
 
@@ -41,13 +41,26 @@ public class World : MonoBehaviour {
 
 	public static Block GetWorldBlock(Vector3 pos)
 	{
-		int cx = (int) (Mathf.Round(pos.x)/(float)chunkSize) * chunkSize;
-		int cy = (int) (Mathf.Round(pos.y)/(float)chunkSize) * chunkSize;
-		int cz = (int) (Mathf.Round(pos.z)/(float)chunkSize) * chunkSize;
+		int cx, cy, cz;
 
-		int blx = (int) (Mathf.Round(pos.x) - cx);
-		int bly = (int) (Mathf.Round(pos.y) - cy);
-		int blz = (int) (Mathf.Round(pos.z) - cz);
+		if (pos.x < 0)
+			cx = (int)((Mathf.Round(pos.x - chunkSize) + 1) / (float)chunkSize) * chunkSize;
+		else
+			cx = (int)(Mathf.Round(pos.x) / (float)chunkSize) * chunkSize;
+
+		if (pos.y < 0)
+			cy = (int)((Mathf.Round(pos.y - chunkSize) + 1) / (float)chunkSize) * chunkSize;
+		else
+			cy = (int)(Mathf.Round(pos.y) / (float)chunkSize) * chunkSize;
+
+		if (pos.z < 0)
+			cz = (int)((Mathf.Round(pos.z - chunkSize) + 1) / (float)chunkSize) * chunkSize;
+		else
+			cz = (int)(Mathf.Round(pos.z) / (float)chunkSize) * chunkSize;
+
+		int blx = (int)Mathf.Abs((float)Math.Round(pos.x) - cx);
+		int bly = (int)Mathf.Abs((float)Math.Round(pos.y) - cy);
+		int blz = (int)Mathf.Abs((float)Math.Round(pos.z) - cz);
 
 		string cn = BuildChunkName(new Vector3(cx,cy,cz));
 		Chunk c;
