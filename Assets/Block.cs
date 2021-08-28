@@ -5,7 +5,7 @@ using UnityEngine;
 public class Block{
 
 	enum Cubeside {BOTTOM, TOP, LEFT, RIGHT, FRONT, BACK};
-	public enum BlockType {GRASS, DIRT, STONE, BEDROCK, REDSTONE, DIAMOND, NOCRACK, 
+	public enum BlockType {GRASS, DIRT, STONE, SAND, GOLD, BEDROCK, REDSTONE, DIAMOND, NOCRACK, 
 							CRACK1, CRACK2, CRACK3, CRACK4, AIR};
 
 	public BlockType bType;
@@ -16,7 +16,7 @@ public class Block{
 
 	public BlockType health;
 	int currentHealth;
-	int[] blockHealthMax = {3, 3, 4, -1, 4, 4, 0, 0, 0, 0, 0, 0};
+	int[] blockHealthMax = {3, 3, 4, 2, 3, -1, 4, 4, 0, 0, 0, 0, 0, 0};
 
 	Vector2[,] blockUVs = { 
 		/*GRASS TOP*/		{new Vector2( 0.125f, 0.375f ), new Vector2( 0.1875f, 0.375f),
@@ -27,6 +27,10 @@ public class Block{
 								new Vector2( 0.125f, 1.0f ),new Vector2( 0.1875f, 1.0f )},
 		/*STONE*/			{new Vector2( 0, 0.875f ), new Vector2( 0.0625f, 0.875f),
 								new Vector2( 0, 0.9375f ),new Vector2( 0.0625f, 0.9375f )},
+		/*SAND*/			{ new Vector2(0.125f,0.875f),  new Vector2(0.1875f,0.875f),
+ 								new Vector2(0.125f,0.9375f), new Vector2(0.1875f,0.9375f)},
+ 		/*GOLD*/			{ new Vector2(0f,0.8125f),  new Vector2(0.0625f,0.8125f),
+ 								new Vector2(0f,0.875f), new Vector2(0.0625f,0.875f)},
 		/*BEDROCK*/			{new Vector2( 0.3125f, 0.8125f ), new Vector2( 0.375f, 0.8125f),
 								new Vector2( 0.3125f, 0.875f ),new Vector2( 0.375f, 0.875f )},
 		/*REDSTONE*/		{new Vector2( 0.1875f, 0.75f ), new Vector2( 0.25f, 0.75f),

@@ -5,6 +5,7 @@ using UnityEngine;
 public class BlockInteraction : MonoBehaviour {
 
 	public GameObject cam;
+	Block.BlockType buildtype = Block.BlockType.STONE;
 	
 	// Use this for initialization
 	void Start () {
@@ -13,6 +14,18 @@ public class BlockInteraction : MonoBehaviour {
 
 	// Update is called once per frame
 	void Update () {
+		
+		if(Input.GetKeyDown("1"))
+			buildtype = Block.BlockType.SAND;
+		if(Input.GetKeyDown("2"))
+			buildtype = Block.BlockType.STONE;
+		if(Input.GetKeyDown("3"))
+			buildtype = Block.BlockType.DIAMOND;
+		if(Input.GetKeyDown("4"))
+			buildtype = Block.BlockType.REDSTONE;
+		if(Input.GetKeyDown("5"))
+			buildtype = Block.BlockType.GOLD;
+
 		if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1))
         {
             RaycastHit hit;
@@ -45,7 +58,7 @@ public class BlockInteraction : MonoBehaviour {
 					update = b.HitBlock();
 				else
 				{
-					update = b.BuildBlock(Block.BlockType.STONE);
+					update = b.BuildBlock(buildtype);
 				}
 				
 				if(update)
