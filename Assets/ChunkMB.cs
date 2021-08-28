@@ -31,19 +31,25 @@ public class ChunkMB: MonoBehaviour
 		for(int i = 0; i < maxdrop; i++)
 		{
 			Block.BlockType previousType = thisBlock.bType;
-			thisBlock.SetType(bt);
-			if(prevBlock != null)
+			if (previousType != bt)
+				thisBlock.SetType(bt);
+			if (prevBlock != null)
+			{                      //
 				prevBlock.SetType(previousType);
-
+				if (thisBlock.owner != prevBlock.owner)   // Handle falling through chunk boundaries
+					prevBlock.owner.Redraw();             //
+			}                                             //
+			thisBlock.owner.Redraw();
 			prevBlock = thisBlock;
-			b.owner.Redraw();
-			
+			//b.owner.Redraw();                           //
+
 			yield return new WaitForSeconds(0.2f);
 			Vector3 pos = thisBlock.position;
 			
 			thisBlock = thisBlock.GetBlock((int)pos.x,(int)pos.y-1,(int)pos.z);
-			if(thisBlock.isSolid)
-			{	
+			if (thisBlock.isSolid)
+			{
+				thisBlock.owner.Redraw();
 				yield break;
 			}
 		}

@@ -126,8 +126,8 @@ public class Block{
 			bType = BlockType.AIR;
 			isSolid = false;
 			health = BlockType.NOCRACK;
+			owner.UpdateChunk();
 			owner.Redraw();
-			//owner.UpdateChunk();
 			return true;
 		}
 		owner.Redraw();
