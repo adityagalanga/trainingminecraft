@@ -17,7 +17,7 @@ public class Block{
 
 	public BlockType health;
 	public int currentHealth;
-	int[] blockHealthMax = {3, 3, 8, 4, 2, 3, -1, 4, 4, 0, 0, 0, 0, 0, 0};
+	int[] blockHealthMax = {3, 3, 10, 4, 2, 3, -1, 4, 4, 0, 0, 0, 0, 0, 0};
 
 	Vector2[,] blockUVs = { 
 		/*GRASS TOP*/		{new Vector2( 0.125f, 0.375f ), new Vector2( 0.1875f, 0.375f),
@@ -94,7 +94,7 @@ public class Block{
 		{
 			owner.mb.StartCoroutine(owner.mb.Flow(this, 
 										BlockType.WATER, 
-										blockHealthMax[(int)BlockType.WATER],10));
+										blockHealthMax[(int)BlockType.WATER],15));
 		}
 		else
 		{
@@ -318,17 +318,17 @@ public class Block{
 	{
 		if(bType == BlockType.AIR) return;
 		//solid or same neighbour
-        if(!HasSolidNeighbour((int)position.x,(int)position.y,(int)position.z + 1) && bType != BlockType.WATER)
+		if(!HasSolidNeighbour((int)position.x,(int)position.y,(int)position.z + 1))
 			CreateQuad(Cubeside.FRONT);
-        if(!HasSolidNeighbour((int)position.x,(int)position.y,(int)position.z - 1) && bType != BlockType.WATER)
+		if(!HasSolidNeighbour((int)position.x,(int)position.y,(int)position.z - 1))
 			CreateQuad(Cubeside.BACK);
 		if(!HasSolidNeighbour((int)position.x,(int)position.y + 1,(int)position.z))
 			CreateQuad(Cubeside.TOP);
 		if(!HasSolidNeighbour((int)position.x,(int)position.y - 1,(int)position.z))
 			CreateQuad(Cubeside.BOTTOM);
-        if(!HasSolidNeighbour((int)position.x - 1,(int)position.y,(int)position.z) && bType != BlockType.WATER)
+		if(!HasSolidNeighbour((int)position.x - 1,(int)position.y,(int)position.z))
 			CreateQuad(Cubeside.LEFT);
-        if(!HasSolidNeighbour((int)position.x + 1,(int)position.y,(int)position.z) && bType != BlockType.WATER)
+		if(!HasSolidNeighbour((int)position.x + 1,(int)position.y,(int)position.z))
 			CreateQuad(Cubeside.RIGHT);
 	}
 }

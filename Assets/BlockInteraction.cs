@@ -63,6 +63,7 @@ public class BlockInteraction : MonoBehaviour {
 					update = b.HitBlock();
 				else
 				{
+					
 					update = b.BuildBlock(buildtype);
 				}
 				

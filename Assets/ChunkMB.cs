@@ -68,6 +68,9 @@ public class ChunkMB: MonoBehaviour
 			StartCoroutine(Flow(b.GetBlock(x,y,z-1),bt,strength,maxsize));
 			yield return new WaitForSeconds(1);
 		}
+
+
+		
 	}
 
 	void SaveProgress()
